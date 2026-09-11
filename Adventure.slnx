@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Adventure.Kern/Adventure.Kern.csproj" />
+  <Project Path="Adventure.Konsole/Adventure.Konsole.csproj" />
+</Solution>
