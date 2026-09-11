@@ -1,7 +1,9 @@
-namespace Adventure.Kern;
+using Adventure.Kern;
+
+namespace Adventure.Daten;
 
 /// <summary>Zwei Level fest im Code – solange wir noch keine Dateien lesen können.</summary>
-public class EingebauteLevel : ILevelQuelle
+public class EingebauteLevelQuelle : ILevelQuelle
 {
     private static readonly Dictionary<string, string[]> level = new()
     {

@@ -2,11 +2,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Adventure.Kern\Adventure.Kern.csproj" />
-    <ProjectReference Include="..\Adventure.Daten\Adventure.Daten.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
 </Project>

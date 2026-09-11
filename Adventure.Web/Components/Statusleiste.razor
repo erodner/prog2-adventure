@@ -1,0 +1,18 @@
+@using Adventure.Kern
+
+<div class="status">
+    <h2>@Spieler.Name</h2>
+    <p>Lebenspunkte: <span class="herzen">@Herzen</span></p>
+    <p>Punkte: <strong>@Spieler.Punkte</strong></p>
+    <p>Inventar: @Spieler.Inventar</p>
+    <p>Runde: @Runde</p>
+    <p class="meldung">@Meldung</p>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public Spieler Spieler { get; set; } = null!;
+    [Parameter] public int Runde { get; set; }
+    [Parameter] public string Meldung { get; set; } = "";
+
+    private string Herzen => new string('♥', Spieler.Lebenspunkte) + new string('♡', Spieler.MaxLebenspunkte - Spieler.Lebenspunkte);
+}

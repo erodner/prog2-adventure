@@ -1,0 +1,108 @@
+@page "/"
+@using Adventure.Kern
+@inject ILevelQuelle LevelQuelle
+
+<PageTitle>Adventure</PageTitle>
+
+<div class="werkzeuge">
+    <label>Level:
+        <select @bind="levelName" @bind:after="NeuStarten">
+            @foreach (string name in LevelQuelle.LevelNamen)
+            {
+                <option value="@name">@name</option>
+            }
+        </select>
+    </label>
+    <button @onclick="NeuStarten">Neu starten</button>
+</div>
+
+<div class="arbeitsbereich">
+    <div class="spielfeld" tabindex="0" @ref="feldElement"
+         @onkeydown="TasteGedrueckt" @onkeydown:preventDefault
+         style="grid-template-columns: repeat(@feld.Breite, 1fr);">
+        @for (int y = 0; y < feld.Hoehe; y++)
+        {
+            for (int x = 0; x < feld.Breite; x++)
+            {
+                Spielobjekt? objekt = feld.ObjektAn(new Position(x, y));
+                <div class="feld @KlasseFuer(objekt)" title="@objekt?.Beschreibung()">@SymbolFuer(objekt)</div>
+            }
+        }
+    </div>
+
+    <Statusleiste Spieler="feld.Spieler" Runde="feld.Runde" Meldung="feld.LetzteMeldung" />
+</div>
+
+<p class="hinweis">Klicke auf das Spielfeld und steuere mit den Pfeiltasten oder W A S D.</p>
+
+@if (feld.Status != Spielstatus.Laeuft)
+{
+    <SpielEndeDialog Status="feld.Status" Punkte="feld.Spieler.Punkte" Runden="feld.Runde"
+                     OnNeustart="NeuStarten" />
+}
+
+@code {
+    private Spielfeld feld = null!;
+    private string levelName = "";
+    private ElementReference feldElement;
+
+    protected override void OnInitialized()
+    {
+        levelName = LevelQuelle.LevelNamen[0];
+        NeuStarten();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await feldElement.FocusAsync();
+        }
+    }
+
+    private void NeuStarten()
+    {
+        feld = LevelParser.Parsen(LevelQuelle.Laden(levelName));
+    }
+
+    private void TasteGedrueckt(KeyboardEventArgs e)
+    {
+        Richtung? richtung = e.Key switch
+        {
+            "ArrowUp" or "w" or "W" => Richtung.Oben,
+            "ArrowDown" or "s" or "S" => Richtung.Unten,
+            "ArrowLeft" or "a" or "A" => Richtung.Links,
+            "ArrowRight" or "d" or "D" => Richtung.Rechts,
+            _ => null
+        };
+        if (richtung is Richtung r)
+        {
+            feld.SpielerZieht(r);   // danach rendert Blazor die Komponente automatisch neu
+        }
+    }
+
+    private static string SymbolFuer(Spielobjekt? objekt) => objekt switch
+    {
+        null => "",
+        Wand => "🧱",
+        Spieler => "🧝",
+        Wache => "💂",
+        Verfolger => "👹",
+        Schluessel => "🔑",
+        Tuer t => t.IstOffen ? "▫️" : "🚪",
+        Truhe t => t.IstGeoeffnet ? "📭" : "🎁",
+        Trank => "🧪",
+        Schatz => "💰",
+        Ausgang => "🏁",
+        _ => objekt.Symbol.ToString()
+    };
+
+    private static string KlasseFuer(Spielobjekt? objekt) => objekt switch
+    {
+        null => "boden",
+        Wand => "wand",
+        Gegner => "gegner",
+        Spieler => "spieler",
+        _ => "objekt"
+    };
+}

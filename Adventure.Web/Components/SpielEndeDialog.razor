@@ -1,0 +1,27 @@
+@using Adventure.Kern
+
+<div class="dialog-hintergrund">
+    <div class="dialog">
+        <h2>@(Status == Spielstatus.Gewonnen ? "Geschafft!" : "Besiegt")</h2>
+        <p>
+            @if (Status == Spielstatus.Gewonnen)
+            {
+                <text>@Punkte Punkte in @Runden Runden.</text>
+            }
+            else
+            {
+                <text>Die Gegner waren schneller. Versuch es noch einmal.</text>
+            }
+        </p>
+        <div class="dialog-buttons">
+            <button @onclick="() => OnNeustart.InvokeAsync()">Neu starten</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Spielstatus Status { get; set; }
+    [Parameter] public int Punkte { get; set; }
+    [Parameter] public int Runden { get; set; }
+    [Parameter] public EventCallback OnNeustart { get; set; }
+}
