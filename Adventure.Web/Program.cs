@@ -8,7 +8,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 // Die eine Stelle, an der entschieden wird, woher die Level kommen.
-builder.Services.AddSingleton<ILevelQuelle, EingebauteLevelQuelle>();
+builder.Services.AddSingleton<ILevelQuelle>(_ =>
+    new TextdateiLevelQuelle(Path.Combine(AppContext.BaseDirectory, "levels")));
 
 var app = builder.Build();
 

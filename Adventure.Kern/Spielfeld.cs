@@ -194,6 +194,61 @@ public class Spielfeld
         }
     }
 
+    /// <summary>Fasst den aktuellen Zustand als Spielstand zusammen.</summary>
+    public Spielstand Erfassen(string levelName, Level original)
+    {
+        Spielfeld frisch = LevelParser.Parsen(original);
+        Spielstand stand = new()
+        {
+            LevelName = levelName,
+            Runde = Runde,
+            SpielerPosition = Spieler.Position,
+            Lebenspunkte = Spieler.Lebenspunkte,
+            Punkte = Spieler.Punkte,
+            Inventar = Spieler.Inventar.Select(g => g.Name).ToList(),
+            GegnerPositionen = gegner.Select(g => g.Position).ToList(),
+        };
+        foreach (StatischesObjekt s in frisch.statische.Values)
+        {
+            StatischesObjekt? jetzt = StatischesObjektAn(s.Position);
+            if (s is Gegenstand && jetzt is null) stand.EntfernteGegenstaende.Add(s.Position);
+            if (jetzt is Tuer t && t.IstOffen) stand.OffeneTueren.Add(t.Position);
+            if (jetzt is Truhe tr && tr.IstGeoeffnet) stand.GeoeffneteTruhen.Add(tr.Position);
+        }
+        return stand;
+    }
+
+    /// <summary>Baut das Level frisch auf und spielt den Spielstand darüber.</summary>
+    public static Spielfeld Wiederherstellen(Level level, Spielstand stand)
+    {
+        Spielfeld feld = LevelParser.Parsen(level);
+        feld.Runde = stand.Runde;
+        feld.Spieler.Versetzen(stand.SpielerPosition);
+        feld.Spieler.Wiederherstellen(stand.Lebenspunkte, stand.Punkte);
+
+        foreach (Position p in stand.EntfernteGegenstaende)
+        {
+            if (feld.StatischesObjektAn(p) is Gegenstand g)
+            {
+                feld.statische.Remove(p);
+                if (g is Schluessel && stand.Inventar.Contains(g.Name)) feld.Spieler.Inventar.Hinzufuegen(g);
+            }
+        }
+        foreach (Position p in stand.OffeneTueren)
+        {
+            if (feld.StatischesObjektAn(p) is Tuer t) t.Aufschliessen();
+        }
+        foreach (Position p in stand.GeoeffneteTruhen)
+        {
+            if (feld.StatischesObjektAn(p) is Truhe t) t.AlsGeoeffnetMarkieren();
+        }
+        for (int i = 0; i < Math.Min(stand.GegnerPositionen.Count, feld.gegner.Count); i++)
+        {
+            feld.gegner[i].Versetzen(stand.GegnerPositionen[i]);
+        }
+        return feld;
+    }
+
     /// <summary>Zeichnet das Spielfeld als Text – Zeile für Zeile.</summary>
     public string AlsText()
     {
