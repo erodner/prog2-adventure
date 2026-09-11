@@ -23,7 +23,12 @@ public sealed class Tuer : StatischesObjekt, IInteragierbar
             return "Die Tür ist verschlossen. Du brauchst einen Schlüssel.";
         }
         spieler.Inventar.Entfernen<Schluessel>();
-        IstOffen = true;
+        Aufschliessen();
         return "Du schließt die Tür auf.";
+    }
+
+    public void Aufschliessen()
+    {
+        IstOffen = true;
     }
 }

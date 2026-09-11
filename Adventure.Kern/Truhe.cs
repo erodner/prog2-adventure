@@ -22,4 +22,10 @@ public sealed class Truhe : StatischesObjekt, IInteragierbar
         IstGeoeffnet = true;
         return Inhalt.Aufheben(spieler);
     }
+
+    /// <summary>Für das Wiederherstellen eines Spielstands: Truhe gilt als geplündert.</summary>
+    public void AlsGeoeffnetMarkieren()
+    {
+        IstGeoeffnet = true;
+    }
 }

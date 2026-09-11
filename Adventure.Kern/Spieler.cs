@@ -45,6 +45,13 @@ public class Spieler : BeweglichesObjekt
         Lebenspunkte = Math.Min(MaxLebenspunkte, Lebenspunkte + heilung);
     }
 
+    /// <summary>Setzt Lebenspunkte und Punkte direkt – nur beim Laden eines Spielstands.</summary>
+    public void Wiederherstellen(int lebenspunkte, int punkte)
+    {
+        Lebenspunkte = Math.Clamp(lebenspunkte, 0, MaxLebenspunkte);
+        Punkte = punkte;
+    }
+
     public void SchatzEinsammeln(Schatz schatz)
     {
         Punkte += schatz.Wert;
