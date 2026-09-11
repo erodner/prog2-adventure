@@ -1,4 +1,6 @@
 <Solution>
+  <Project Path="Adventure.Daten/Adventure.Daten.csproj" />
   <Project Path="Adventure.Kern/Adventure.Kern.csproj" />
   <Project Path="Adventure.Konsole/Adventure.Konsole.csproj" />
+  <Project Path="Adventure.Web/Adventure.Web.csproj" />
 </Solution>

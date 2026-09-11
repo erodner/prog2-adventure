@@ -1,7 +1,8 @@
+using Adventure.Daten;
 using Adventure.Kern;
 
 // Konsolenversion des Spiels. Steuerung: Pfeiltasten oder W A S D, Q beendet.
-ILevelQuelle levelQuelle = new EingebauteLevel();
+ILevelQuelle levelQuelle = new EingebauteLevelQuelle();
 string levelName = args.Length > 0 ? args[0] : levelQuelle.LevelNamen[0];
 Spielfeld feld = LevelParser.Parsen(levelQuelle.Laden(levelName));
 
