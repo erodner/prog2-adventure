@@ -1,6 +1,6 @@
 namespace Adventure.Kern;
 
-public sealed class Wand : Spielobjekt
+public sealed class Wand : StatischesObjekt
 {
     public Wand(Position position) : base("Wand", position)
     {

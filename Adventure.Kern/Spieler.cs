@@ -1,29 +1,53 @@
 namespace Adventure.Kern;
 
-public class Spieler : Spielobjekt
+public class SchatzEventArgs : EventArgs
 {
-    public int Lebenspunkte { get; private set; } = 3;
+    public Schatz Schatz { get; }
+    public int Punkte { get; }
+
+    public SchatzEventArgs(Schatz schatz, int punkte)
+    {
+        Schatz = schatz;
+        Punkte = punkte;
+    }
+}
+
+public class Spieler : BeweglichesObjekt
+{
+    public const int MaxLebenspunkte = 3;
+
+    public int Lebenspunkte { get; private set; } = MaxLebenspunkte;
+    public int Punkte { get; private set; }
+    public Inventar<Gegenstand> Inventar { get; } = new();
+
+    /// <summary>Wird ausgelöst, wenn der Spieler einen Schatz findet – z. B. für die Anzeige.</summary>
+    public event EventHandler<SchatzEventArgs>? SchatzGefunden;
 
     public Spieler(string name, Position position) : base(name, position)
     {
     }
 
     public override char Symbol => '@';
+    public bool IstAmLeben => Lebenspunkte > 0;
 
     public override string Beschreibung()
     {
-        return base.Beschreibung() + $", {Lebenspunkte} Lebenspunkte";
+        return $"{Name} bei {Position}, {Lebenspunkte}/{MaxLebenspunkte} Lebenspunkte, {Punkte} Punkte, Inventar: {Inventar}";
     }
 
-    /// <summary>Versucht einen Schritt; bleibt stehen, wenn das Zielfeld belegt ist.</summary>
-    public bool Bewegen(Richtung richtung, Spielfeld feld)
+    public void SchadenNehmen(int schaden = 1)
     {
-        Position ziel = Position.Verschoben(richtung);
-        if (!feld.IstFrei(ziel))
-        {
-            return false;
-        }
-        Position = ziel;
-        return true;
+        Lebenspunkte = Math.Max(0, Lebenspunkte - schaden);
+    }
+
+    public void Heilen(int heilung)
+    {
+        Lebenspunkte = Math.Min(MaxLebenspunkte, Lebenspunkte + heilung);
+    }
+
+    public void SchatzEinsammeln(Schatz schatz)
+    {
+        Punkte += schatz.Wert;
+        SchatzGefunden?.Invoke(this, new SchatzEventArgs(schatz, Punkte));
     }
 }

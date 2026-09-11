@@ -1,30 +1,27 @@
 using Adventure.Kern;
 
-// Ein kleiner Raum, noch von Hand gebaut. Steuerung: W A S D, Q beendet.
-Spieler held = new Spieler("Held", new Position(1, 1));
-Spielfeld feld = new Spielfeld(10, 6, held);
+// Konsolenversion des Spiels. Steuerung: Pfeiltasten oder W A S D, Q beendet.
+ILevelQuelle levelQuelle = new EingebauteLevel();
+string levelName = args.Length > 0 ? args[0] : levelQuelle.LevelNamen[0];
+Spielfeld feld = LevelParser.Parsen(levelQuelle.Laden(levelName));
 
-for (int x = 0; x < feld.Breite; x++)
+feld.Spieler.SchatzGefunden += (sender, e) =>
 {
-    feld.Hinzufuegen(new Wand(new Position(x, 0)));
-    feld.Hinzufuegen(new Wand(new Position(x, feld.Hoehe - 1)));
-}
-for (int y = 1; y < feld.Hoehe - 1; y++)
-{
-    feld.Hinzufuegen(new Wand(new Position(0, y)));
-    feld.Hinzufuegen(new Wand(new Position(feld.Breite - 1, y)));
-}
-feld.Hinzufuegen(new Wand(new Position(5, 2)));
-feld.Hinzufuegen(new Wand(new Position(5, 3)));
+    Console.Beep();
+};
 
-while (true)
+while (feld.Status == Spielstatus.Laeuft)
 {
     Console.Clear();
+    Console.WriteLine($"Level: {levelName}   Runde {feld.Runde}");
     Console.WriteLine(feld.AlsText());
-    Console.WriteLine(held.Beschreibung());
-    Console.Write("Richtung (WASD, Q = Ende): ");
+    Console.WriteLine(feld.Spieler.Beschreibung());
+    Console.WriteLine(feld.LetzteMeldung);
+    Console.Write("Zug (Pfeiltasten/WASD, Q = Ende): ");
 
     ConsoleKey taste = Console.ReadKey(true).Key;
+    if (taste == ConsoleKey.Q) return;
+
     Richtung? richtung = taste switch
     {
         ConsoleKey.W or ConsoleKey.UpArrow => Richtung.Oben,
@@ -33,10 +30,15 @@ while (true)
         ConsoleKey.D or ConsoleKey.RightArrow => Richtung.Rechts,
         _ => null
     };
-
-    if (taste == ConsoleKey.Q) break;
     if (richtung is Richtung r)
     {
-        held.Bewegen(r, feld);
+        feld.SpielerZieht(r);
     }
 }
+
+Console.Clear();
+Console.WriteLine(feld.AlsText());
+Console.WriteLine(feld.LetzteMeldung);
+Console.WriteLine(feld.Status == Spielstatus.Gewonnen
+    ? $"Gewonnen! {feld.Spieler.Punkte} Punkte in {feld.Runde} Runden."
+    : "Verloren. Versuch es noch einmal.");
