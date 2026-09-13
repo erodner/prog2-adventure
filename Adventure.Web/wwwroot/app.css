@@ -42,7 +42,7 @@ body { font-family: system-ui, sans-serif; margin: 0; background: #1e1e2e; color
 .kopfzeile h1 { margin: 0; font-size: 1.4rem; }
 main { padding: 1rem 1.5rem; }
 .werkzeuge { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; }
-.arbeitsbereich { display: grid; grid-template-columns: auto 240px; gap: 1.5rem; align-items: start; }
+.arbeitsbereich { display: grid; grid-template-columns: max-content 240px; justify-content: start; gap: 1.5rem; align-items: start; }
 .hinweis { color: #999; }
 
 /* ---- Spielfeld: ein CSS-Grid, eine Zelle pro Feld ---- */
