@@ -1,5 +1,7 @@
 # Adventure – das Beispielspiel zu „Programmierung 2“
 
+**[▶ Im Browser spielen](https://www.erodner.de/prog2-adventure/)** – dieselbe Oberfläche wie `Adventure.Web`, nur als WebAssembly im Browser statt auf einem Server.
+
 Ein rundenbasiertes 2D-Dungeon-Spiel in C#, das die Vorlesung [Programmierung 2](https://www.erodner.de/prog2-lecture/) an der HTW Berlin begleitet. Es wächst von Vorlesung zu Vorlesung; die Git-Tags markieren den Stand nach der jeweiligen Vorlesung:
 
 | Tag | Stand nach Vorlesung |

@@ -3,5 +3,6 @@
   <Project Path="Adventure.Kern/Adventure.Kern.csproj" />
   <Project Path="Adventure.Konsole/Adventure.Konsole.csproj" />
   <Project Path="Adventure.Tests/Adventure.Tests.csproj" />
+  <Project Path="Adventure.Wasm/Adventure.Wasm.csproj" />
   <Project Path="Adventure.Web/Adventure.Web.csproj" />
 </Solution>
